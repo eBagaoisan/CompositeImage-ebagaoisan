@@ -1,40 +1,58 @@
 #include "bitmap.h"
 #include <iostream>
 #include <vector>
-#include <stream>
+#include <string>
 
 using namespace std;
 
 //Prototypes
-void validBMP(Bitmap);
-void sizeImage(Bitmap);
-vector< vector<Pixel> > convertBMP(Bitmap &);
+bool validBMP(string);
+bool sizeImage(Bitmap);
 vector< vector<Pixel> > greyScale(vector<vector<Pixel> >&);
-vector< vector<pixel> > composite(vector<vector<Pixeel> >&);
+vector< vector<Pixel> > composite(vector<vector<Pixel> >&);
+
+//variables
+int MAX_BMP = 10;
+string file;
+Bitmap image;
 
 int main()
 {
+    int i=0;
+    do {
+        cout<<"Please input a bmp file or \"DONE\": ";
+        cin>>file;
+        if (validBMP(file) == false){
+            while(validBMP(file) == false){
+                cout<<"Invalid file, please enter a bmp file: ";
+                cin>>file;
+                validBMP(file);
+            }
+        }
+        image.open(file);
 
-    
+    }
+    while(i < MAX_BMP);
+    i++;
+
     return 0;
 }
 
 /*Takes users image input and checks if user input is a valid BMP image, 
 if not then asks user to access another file that
 is valid.*/
-bool validBMP(Bitmap bmp){
+bool validBMP(string bmp){ 
+    Bitmap image;
     image.open(bmp);
     bool realImage = image.isImage();
     if (realImage == false){
-        
+        return false;
     }
-    
+    else{
+        return true;
+    }
 }
 
-//Converts valid image into a pixel matrix
-vector< vector<Pixel> > convertBMP(Bitmap & image){
-//toPixelmatrix
-}
 
 /*checks if new image is the same size as previous image
 by checking and comparing pixel size of both images,
@@ -46,7 +64,18 @@ bool sizeImage(Bitmap size){
 
 //Takes matrix of pixels and takes average values of all RGB components
 vector<vector<Pixel> > greyScale(vector<vector<Pixel> >& imgMatrix){
-
+    Pixel rgb;
+    int rgbAvg;
+    for(int r = 0; r<imgMatrix.size(); r++){
+        for(int c = 0; c<imgMatrix[r].size(); c++){
+            rgb = imgMatrix[r][c];
+            rgbAvg = (rgb.red + rgb.green + rgb.blue)/3;
+            rgb.red = rgbAvg;
+            rgb.green = rgbAvg;
+            rgb.blue = rgbAvg;
+            imgMatrix[r][c] = rgb;
+        }
+    }
 }
 
 //Takes values of matrices and gets the averages of all 10 images and processes each image into one matrix
