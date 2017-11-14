@@ -11,29 +11,50 @@ bool sizeImage(Bitmap);
 vector< vector<Pixel> > greyScale(vector<vector<Pixel> >&);
 vector< vector<Pixel> > composite(vector<vector<Pixel> >&);
 
+
 //variables
 int MAX_BMP = 10;
 string file;
 Bitmap image;
+vector<Bitmap> pictures;
 
 int main()
 {
     int i=0;
+
+    //Loop asks user for bmp files and stores them into vector of type Bitmap
     do {
         cout<<"Please input a bmp file or \"DONE\": ";
         cin>>file;
-        if (validBMP(file) == false){
+        if (file == "DONE"){
+            if(pictures.size() > 1){
+                break;
+            }
+            else{
+                cout<<"Not enough files entered."<<endl;
+                i--;
+            }
+        }
+        else if (validBMP(file) == false){
             while(validBMP(file) == false){
-                cout<<"Invalid file, please enter a bmp file: ";
+                cout<<"ERROR:Invalid entry, please enter a bmp file: ";
                 cin>>file;
                 validBMP(file);
             }
         }
-        image.open(file);
+        else if(validBMP(file) == true){
+            image.open(file);
+            pictures.push_back(image);
+        }
+        else{
+            cout<<"Invalid entry!"<<endl;
+            i--;
+        }
 
     }
     while(i < MAX_BMP);
     i++;
+    
 
     return 0;
 }
