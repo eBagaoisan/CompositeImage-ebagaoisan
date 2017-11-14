@@ -46,10 +46,6 @@ int main()
             image.open(file);
             pictures.push_back(image);
         }
-        else{
-            cout<<"Invalid entry!"<<endl;
-            i--;
-        }
 
     }
     while(i < MAX_BMP);
