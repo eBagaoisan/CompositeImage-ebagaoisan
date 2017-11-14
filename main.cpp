@@ -7,9 +7,8 @@ using namespace std;
 
 //Prototypes
 bool validBMP(string);
-bool sizeImage(Bitmap);
-vector< vector<Pixel> > greyScale(vector<vector<Pixel> >&);
-vector< vector<Pixel> > composite(vector<vector<Pixel> >&);
+bool sizeImage(vector<Bitmap>, vector<Bitmap>);
+vector< vector<Pixel> > composite(vector<Bitmap> &);
 
 
 //variables
@@ -21,7 +20,6 @@ vector<Bitmap> pictures;
 int main()
 {
     int i=0;
-
     //Loop asks user for bmp files and stores them into vector of type Bitmap
     do {
         cout<<"Please input a bmp file or \"DONE\": ";
@@ -46,12 +44,13 @@ int main()
             image.open(file);
             pictures.push_back(image);
         }
-
     }
     while(i < MAX_BMP);
     i++;
     
-
+    //Composite image
+    image.fromPixelMatrix(composite(pictures));
+    image.save("composite-ebagaoisan.bmp");
     return 0;
 }
 
@@ -75,27 +74,44 @@ bool validBMP(string bmp){
 by checking and comparing pixel size of both images,
 if invalid return to main function loop
 */
-bool sizeImage(Bitmap size){
 
-}
-
-//Takes matrix of pixels and takes average values of all RGB components
-vector<vector<Pixel> > greyScale(vector<vector<Pixel> >& imgMatrix){
-    Pixel rgb;
-    int rgbAvg;
-    for(int r = 0; r<imgMatrix.size(); r++){
-        for(int c = 0; c<imgMatrix[r].size(); c++){
-            rgb = imgMatrix[r][c];
-            rgbAvg = (rgb.red + rgb.green + rgb.blue)/3;
-            rgb.red = rgbAvg;
-            rgb.green = rgbAvg;
-            rgb.blue = rgbAvg;
-            imgMatrix[r][c] = rgb;
+/*
+bool sizeImage(vector<Bitmap> image1, vector<Bitmap> image2){
+    if(image1.size() == image2.size()){
+        if(image1[0].size() == image2[0].size()){
+            return true;
         }
     }
+    return false;
 }
+*/
 
 //Takes values of matrices and gets the averages of all 10 images and processes each image into one matrix
-vector<vector<Pixel> > composite(vector<vector<Pixel> >& matrix){
+vector<vector<Pixel> > composite(vector<Bitmap>& matrix){
+    vector<vector<Pixel> > bmp;
+    vector<vector<Pixel> > tempBmp;
+    Pixel rgb;
+    int tempAvg = matrix.size();
 
+    bmp = matrix[0].toPixelMatrix();
+
+
+    for (int x = 0; x<matrix.size(); x++){
+        tempBmp = matrix[x].toPixelMatrix();
+        for (int r = 0; r<tempBmp.size(); r++){
+            for (int c = 0; c<tempBmp[r].size(); r++){
+                rgb = tempBmp[r][c];
+                rgb.red = rgb.red/tempAvg;
+                rgb.green = rgb.green/tempAvg;
+                rgb.blue = rgb.blue/tempAvg;
+                tempBmp[r][c] = rgb;
+            }
+        }
+    }
+    for (int r = 0; r<bmp.size(); r++){
+        for (int c = 0; c<bmp[r].size(); c++){
+            bmp[r][c] = tempBmp[r][c];
+        }
+    }
+    return bmp;
 }
